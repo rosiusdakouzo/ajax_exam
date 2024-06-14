@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- scores_service.wsdl -->
+<definitions xmlns:tns="http://localhost:8080/ajax/soap/scores_service"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://schemas.xmlsoap.org/wsdl/"
+    name="ScoresService"
+    targetNamespace="http://localhost:8080/ajax/soap/scores_service">
+
+    <!-- Types de données -->
+    <types>
+        <xsd:schema targetNamespace="http://localhost:8080/ajax/soap/scores_service">
+            <xsd:element name="GetScoresRequest" type="xsd:string" />
+            <xsd:element name="GetScoresResponse" type="xsd:string" />
+            <xsd:element name="CreateScoreRequest" type="xsd:string" />
+            <xsd:element name="CreateScoreResponse" type="xsd:string" />
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="GetScoresRequest" />
+    <message name="GetScoresResponse">
+        <part name="scores" element="tns:GetScoresResponse" />
+    </message>
+
+    <message name="CreateScoreRequest">
+        <part name="match_id" type="xsd:int" />
+        <part name="score_home" type="xsd:int" />
+        <part name="score_away" type="xsd:int" />
+    </message>
+    <message name="CreateScoreResponse">
+        <part name="message" element="tns:CreateScoreResponse" />
+    </message>
+
+    <!-- PortType -->
+    <portType name="ScoresPortType">
+        <operation name="GetScores">
+            <input message="tns:GetScoresRequest" />
+            <output message="tns:GetScoresResponse" />
+        </operation>
+        <operation name="CreateScore">
+            <input message="tns:CreateScoreRequest" />
+            <output message="tns:CreateScoreResponse" />
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="ScoresBinding" type="tns:ScoresPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http" />
+        <operation name="GetScores">
+            <soap:operation soapAction="http://localhost:8080/ajax/soap/scores_service#GetScores" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+        <operation name="CreateScore">
+            <soap:operation soapAction="http://localhost:8080/ajax/soap/scores_service#CreateScore" />
+            <input>
+                <soap:body use="literal" />
+            </input>
+            <output>
+                <soap:body use="literal" />
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Service -->
+    <service name="ScoresService">
+        <documentation>Service for managing football match scores.</documentation>
+        <port name="ScoresPort" binding="tns:ScoresBinding">
+            <soap:address location="http://localhost:8080/ajax/soap/soap_server.php" />
+        </port>
+    </service>
+</definitions>

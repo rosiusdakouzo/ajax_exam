@@ -1,0 +1,83 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Football Scores</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <h1>Football Scores</h1>
+    <div id="scores"></div>
+    <br><br>
+    <form id="scoreForm">
+        <label for="match_id">Match ID:</label>
+        <input type="text" id="match_id" name="match_id">
+        <label for="score_home">Home Score:</label>
+        <input type="text" id="score_home" name="score_home">
+        <label for="score_away">Away Score:</label>
+        <input type="text" id="score_away" name="score_away">
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        $(document).ready(function () {
+            // function loadScores() {
+            //     $.ajax({
+            //         url: "soap_client.php?action=getScores",
+            //         method: "GET",
+            //         success: function (data) {
+            //             let scores = JSON.parse(data);
+            //             let scoresHtml = "<ul>";
+            //             scores.forEach(score => {
+            //                 scoresHtml += `<li>Match ID: ${score.match_id}, Home: ${score.score_home}, Away: ${score.score_away}, Timestamp: ${score.timestamp}</li>`;
+            //             });
+            //             scoresHtml += "</ul>";
+            //             $("#scores").html(scoresHtml);
+            //         }
+            //     });
+            // }
+            function loadScores() {
+                $.ajax({
+                    url: "soap_client.php?action=getScores",
+                    method: "GET",
+                    success: function (data) {
+                        let scores = JSON.parse(data);
+                        let scoresHtml = "<table border='solid' cellspacing='0' style='text-align:center' cellpadding='5px'><tr><td>Numero de match</td><td>Date</td>       <td>Equipe domicile</td><td>Score</td><td>Score</td><td>Equipe exterieure</td>          </tr>";
+                        scores.forEach(score => {
+                            scoresHtml += `<tr><td>${score.match_id}</td><td>${score.date}</td><td>${score.team_home}</td><td>${score.score_home}</td><td>${score.score_away}</td><td>${score.team_away}</td></tr>`;
+                        });
+                        scoresHtml += "</table>";
+                        $("#scores").html(scoresHtml);
+                    }
+                });
+            }
+
+            loadScores();
+
+            $("#scoreForm").on("submit", function (event) {
+                event.preventDefault();
+                let formData = {
+                    match_id: $("#match_id").val(),
+                    score_home: $("#score_home").val(),
+                    score_away: $("#score_away").val()
+                };
+
+                $.ajax({
+                    url: "soap_client.php?action=createScore",
+                    method: "POST",
+                    data: formData,
+                    success: function (data) {
+                        alert("Score recorded successfully.");
+                        loadScores();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
